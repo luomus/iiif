@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    io.kompose.service: cantaloupe
+  name: cantaloupe
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: cantaloupe
+  strategy:
+    resources: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: cantaloupe
+    spec:
+      containers:
+      - env:
+        - name: LAJI_IMAGE_API
+          value: https://fmnh-ws-test.it.helsinki.fi/kuvapalvelu/api/images/
+        - name: LAJI_IMAGE_API_AUTH
+          valueFrom:
+            secretKeyRef:
+              key: LAJI_IMAGE_API_AUTH
+              name: image-api
+        image: ' '
+        name: cantaloupe
+        ports:
+        - containerPort: 8182
+        resources: {}
+      restartPolicy: Always
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - cantaloupe
+      from:
+        kind: ImageStreamTag
+        name: cantaloupe:latest
+    type: ImageChange
+status: {}
